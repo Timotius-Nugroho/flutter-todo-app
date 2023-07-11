@@ -52,10 +52,12 @@ class _TodoListPageState extends State<TodoListPage> {
                 itemBuilder: (context, index) {
                   final item = items[index] as Map;
                   return TodoCard(
-                      index: index,
-                      item: item,
-                      navigateToEditPage: navigateToEditPage,
-                      deleteById: deleteById);
+                    index: index,
+                    item: item,
+                    navigateToEditPage: navigateToEditPage,
+                    deleteById: deleteById,
+                    toggleMark: toggleMark,
+                  );
                 }),
           ),
         ),
@@ -119,5 +121,30 @@ class _TodoListPageState extends State<TodoListPage> {
     if (context.mounted) {
       showErrorMsg(context, message: resp["msg"]);
     }
+  }
+
+  Future<void> toggleMark(int index) async {
+    final tempItems = items;
+    tempItems[index]["attributes"]["is_completed"] =
+        !tempItems[index]["attributes"]["is_completed"];
+
+    final resp = await TodoService.updateTodo(tempItems[index]["id"], {
+      "data": {
+        "title": tempItems[index]["attributes"]["title"],
+        "description": tempItems[index]["attributes"]["description"],
+        "is_completed": tempItems[index]["attributes"]["is_completed"]
+      }
+    });
+
+    if (resp["isError"]) {
+      if (context.mounted) {
+        showErrorMsg(context, message: "Failed to mark as done!");
+      }
+      return;
+    }
+
+    setState(() {
+      items = tempItems;
+    });
   }
 }
