@@ -32,17 +32,17 @@ class _TodoListPageState extends State<TodoListPage> {
       floatingActionButton: FloatingActionButton.extended(
           onPressed: navigateToAddPage, label: const Text("Add Todo")),
       body: Visibility(
-        visible: items.isNotEmpty,
-        replacement: Center(
-          child: Image.asset(
-            "assets/images/empty.png",
-            height: 100,
-          ),
+        visible: !isLoading,
+        replacement: const Center(
+          child: CircularProgressIndicator(),
         ),
         child: Visibility(
-          visible: !isLoading,
-          replacement: const Center(
-            child: CircularProgressIndicator(),
+          visible: items.isNotEmpty,
+          replacement: Center(
+            child: Image.asset(
+              "assets/images/empty.png",
+              height: 100,
+            ),
           ),
           child: RefreshIndicator(
             onRefresh: fetchToDos,

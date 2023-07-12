@@ -57,7 +57,13 @@ class _TodoCardState extends State<TodoCard> {
             leading: CircleAvatar(
               child: Text('${widget.index + 1}'),
             ),
-            title: Text(widget.item["attributes"]["title"]),
+            title: Text(
+              widget.item["attributes"]["title"],
+              style: TextStyle(
+                  decoration: isCompleted
+                      ? TextDecoration.lineThrough
+                      : TextDecoration.none),
+            ),
             subtitle: Text(widget.item["attributes"]["description"]),
             trailing: Visibility(
               visible: !isToggeling,
