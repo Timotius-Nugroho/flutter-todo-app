@@ -85,22 +85,26 @@ class _TodoListPageState extends State<TodoListPage> {
   }
 
   Future<void> fetchToDos() async {
-    final resp = await TodoService.getAllTodos();
-    setState(() {
-      isLoading = false;
-    });
-
-    if (!resp["isError"]) {
+    try {
+      final resp = await TodoService.getAllTodos();
       setState(() {
-        items = resp["data"];
+        isLoading = false;
       });
-      return;
-    }
 
-    // debugPrint(jsonEncode(resp));
+      if (!resp["isError"]) {
+        setState(() {
+          items = resp["data"];
+        });
+        return;
+      }
 
-    if (context.mounted) {
-      showErrorMsg(context, message: resp["msg"]);
+      if (context.mounted) {
+        showErrorMsg(context, message: resp["msg"]);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        showErrorMsg(context, message: '$e');
+      }
     }
   }
 
